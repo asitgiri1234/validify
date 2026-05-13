@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
-import { ArrowRight, CheckCircle2, Cloud, Sparkles } from 'lucide-react';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { ArrowRight, Cloud, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useToast } from '../context/ToastContext.jsx';
 import LandingFooter from '../components/LandingFooter.jsx';
@@ -24,10 +24,6 @@ export default function LoginPage() {
     } finally {
       setConnecting(false);
     }
-  }
-
-  function scrollToLearn() {
-    document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
   }
 
   if (status === 'loading') {
@@ -81,13 +77,12 @@ export default function LoginPage() {
                 {connecting ? 'Connecting…' : 'Connect to Salesforce'}
                 {!connecting && <ArrowRight className="h-4 w-4" aria-hidden />}
               </button>
-              <button
-                type="button"
-                onClick={scrollToLearn}
-                className="inline-flex flex-1 items-center justify-center rounded-xl border border-slate-700 bg-slate-950/50 px-5 py-3 text-sm font-semibold text-slate-200 transition hover:border-slate-600 hover:bg-slate-900 sm:flex-none"
+              <Link
+                to="/learn-more"
+                className="inline-flex flex-1 items-center justify-center rounded-xl border border-slate-700 bg-slate-950/50 px-5 py-3 text-center text-sm font-semibold text-slate-200 transition hover:border-slate-600 hover:bg-slate-900 sm:flex-none"
               >
                 Learn More
-              </button>
+              </Link>
             </div>
 
             <p className="mt-6 text-center text-xs text-slate-500">
@@ -95,28 +90,14 @@ export default function LoginPage() {
               <code className="rounded bg-slate-800 px-1 py-0.5 font-mono text-[10px] text-slate-300">
                 GET /api/auth/login
               </code>{' '}
-              and stores a session cookie before opening the dashboard.
+              and stores a session cookie before opening the dashboard.{' '}
+              <Link to="/learn-more" className="text-brand-400 hover:text-brand-300 hover:underline">
+                Read the full product overview
+              </Link>
+              .
             </p>
           </div>
         </div>
-
-        <section id="features" className="mx-auto mt-20 max-w-2xl scroll-mt-24">
-          <h2 className="text-center text-sm font-semibold uppercase tracking-widest text-slate-500">
-            Why Validify
-          </h2>
-          <ul className="mt-6 space-y-4 text-slate-300">
-            {[
-              'Operate validation rules from a focused admin experience instead of scattered setup pages.',
-              'Bulk enable or disable with guardrails and a clear deploy step when APIs are connected.',
-              'Built for teams who need enterprise polish today and Salesforce depth tomorrow.',
-            ].map((item) => (
-              <li key={item} className="flex gap-3 text-sm leading-relaxed">
-                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-400" aria-hidden />
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
       </main>
 
       <LandingFooter />
