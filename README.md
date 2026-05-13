@@ -38,21 +38,12 @@ Copy `.env.example` to `.env` and adjust values as needed.
 | POST | `/api/toggle-all` | Body: `{ "active": boolean }` |
 | POST | `/api/deploy` | Mock deploy success |
 
-## Publishing to GitHub
+## Repository
 
-This repo is initialized with `main` and an initial commit. GitHub CLI is available on this machine, but you must sign in once before pushing:
+Source of truth: [github.com/asitgiri1234/validify](https://github.com/asitgiri1234/validify)
 
-```powershell
-cd c:\Users\91870\Documents\validify
-gh auth login
-gh repo create validify --public --source=. --remote=origin --push
-```
-
-If the name `validify` is taken, pick another name for `gh repo create`. Alternatively, create an empty repository in the GitHub UI, then:
-
-```powershell
-git remote add origin https://github.com/<your-username>/<repo>.git
-git push -u origin main
+```bash
+git clone https://github.com/asitgiri1234/validify.git
 ```
 
 ## License
