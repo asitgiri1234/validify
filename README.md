@@ -31,7 +31,8 @@ Copy `.env.example` to `.env` and adjust values as needed.
 
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | `/api/auth/login` | Mock login success |
+| GET | `/api/auth/login` | Mock login success; establishes session |
+| GET | `/api/auth/session` | Returns whether a session exists and the mock user |
 | POST | `/api/logout` | Clears session |
 | GET | `/api/validation-rules` | List rules |
 | POST | `/api/toggle-rule` | Body: `{ "id": number }` |

@@ -8,6 +8,7 @@ const api = axios.create({
 
 export const authApi = {
   login: () => api.get('/auth/login'),
+  session: () => api.get('/auth/session'),
   logout: () => api.post('/logout'),
 };
 

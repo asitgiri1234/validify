@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { CloudUpload, Loader2, RefreshCw, ShieldOff, ShieldPlus } from 'lucide-react';
 import Navbar from '../components/Navbar.jsx';
 import ValidationRuleTable from '../components/ValidationRuleTable.jsx';
-import { authApi, validationApi } from '../services/api.js';
+import DashboardStats from '../components/DashboardStats.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
+import { validationApi } from '../services/api.js';
 import { useToast } from '../context/ToastContext.jsx';
 
 function parseError(e) {
@@ -11,14 +12,13 @@ function parseError(e) {
 }
 
 export default function Dashboard() {
-  const navigate = useNavigate();
   const toast = useToast();
+  const { user, logout } = useAuth();
   const [rules, setRules] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [bulkBusy, setBulkBusy] = useState(false);
   const [deployBusy, setDeployBusy] = useState(false);
-  const [logoutBusy, setLogoutBusy] = useState(false);
   const [busyIds, setBusyIds] = useState(() => new Set());
 
   const fetchRules = useCallback(async () => {
@@ -91,20 +91,12 @@ export default function Dashboard() {
   }
 
   async function handleLogout() {
-    setLogoutBusy(true);
-    try {
-      await authApi.logout();
-    } catch {
-      // still navigate home; session may already be cleared
-    } finally {
-      setLogoutBusy(false);
-      navigate('/');
-    }
+    await logout();
   }
 
   return (
     <div className="min-h-screen bg-slate-950">
-      <Navbar onLogout={handleLogout} logoutDisabled={logoutBusy} />
+      <Navbar user={user} onLogout={handleLogout} />
 
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
@@ -114,6 +106,10 @@ export default function Dashboard() {
               Mock data from the Express API. Wire Salesforce when you are ready.
             </p>
           </div>
+        </div>
+
+        <div className="mt-8">
+          <DashboardStats rules={rules} />
         </div>
 
         <div className="mt-8 flex flex-wrap gap-2">

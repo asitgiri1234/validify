@@ -1,18 +1,21 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { ArrowRight, CheckCircle2, Cloud, Sparkles } from 'lucide-react';
-import { authApi } from '../services/api.js';
+import { useAuth } from '../context/AuthContext.jsx';
 import { useToast } from '../context/ToastContext.jsx';
+import LandingFooter from '../components/LandingFooter.jsx';
+import PageLoader from '../components/PageLoader.jsx';
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const toast = useToast();
+  const { status, isAuthenticated, login } = useAuth();
   const [connecting, setConnecting] = useState(false);
 
   async function handleConnect() {
     setConnecting(true);
     try {
-      await authApi.login();
+      await login();
       navigate('/dashboard');
     } catch (e) {
       const msg =
@@ -27,13 +30,25 @@ export default function LoginPage() {
     document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
   }
 
+  if (status === 'loading') {
+    return (
+      <div className="min-h-screen bg-slate-950">
+        <PageLoader label="Loading Validify…" />
+      </div>
+    );
+  }
+
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
   return (
-    <div className="relative min-h-screen overflow-hidden bg-slate-950">
+    <div className="relative flex min-h-screen flex-col overflow-hidden bg-slate-950">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-brand-900/40 via-slate-950 to-slate-950" />
       <div className="pointer-events-none absolute -left-32 top-1/3 h-96 w-96 rounded-full bg-indigo-600/20 blur-3xl" />
       <div className="pointer-events-none absolute -right-24 bottom-0 h-80 w-80 rounded-full bg-brand-600/15 blur-3xl" />
 
-      <main className="relative z-10 mx-auto flex min-h-screen max-w-6xl flex-col justify-center px-4 py-16 sm:px-6 lg:px-8">
+      <main className="relative z-10 mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto w-full max-w-lg">
           <div className="mb-8 flex items-center justify-center gap-2 text-brand-300">
             <Cloud className="h-5 w-5" aria-hidden />
@@ -76,11 +91,11 @@ export default function LoginPage() {
             </div>
 
             <p className="mt-6 text-center text-xs text-slate-500">
-              OAuth and live Salesforce APIs ship in a later milestone. This screen calls{' '}
+              OAuth and live Salesforce APIs ship in a later milestone. This flow calls{' '}
               <code className="rounded bg-slate-800 px-1 py-0.5 font-mono text-[10px] text-slate-300">
                 GET /api/auth/login
               </code>{' '}
-              then opens your dashboard.
+              and stores a session cookie before opening the dashboard.
             </p>
           </div>
         </div>
@@ -103,6 +118,8 @@ export default function LoginPage() {
           </ul>
         </section>
       </main>
+
+      <LandingFooter />
     </div>
   );
 }
